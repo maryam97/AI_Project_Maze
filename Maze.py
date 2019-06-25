@@ -100,7 +100,7 @@ class Path:
             if rec:
                 return [l, rec, len(rec)]
 
-    def bfs(self, src, dist):
+    def bfs(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         q = queue.Queue(maxsize=100)
         q.put(src_cell)
@@ -116,7 +116,7 @@ class Path:
                     par[new_cell] = front
                     q.put(new_cell)
         path = []
-        cell = dist
+        cell = dest
         while cell != src:
             path.append(cell)
             cell = par[cell]
@@ -176,7 +176,7 @@ class Path:
             while r.x != src_cell.x and r.y == src_cell.y:
                 path.append(r)
                 r = r.parent
-            return path
+            return [path, len(path)]
 
     def recursive_best_first_search(self, src, dest):
 
@@ -221,6 +221,6 @@ class Path:
             while r.x != src_cell.x and r.y == src_cell.y:
                 path.append(r)
                 r = r.parent
-            return path
+            return [path, len(path)]
 
 
