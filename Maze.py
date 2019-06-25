@@ -54,44 +54,47 @@ class Path:
                 'euclidean': lambda: self.euclidean(src, dest),
                 }[self.h_method]()
 
-    def dfs_recursive(self, path, src, dest, vis):
-        src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
-        vis[src['x']][src['y']] = 1
-        path.append(src)
-        for e in src_cell.neighbors:
-            if e == dest:
-                path.append(dest)
-                return path
-            elif not vis[src['s']][src['y']]:
-                self.dfs_recursive(path, e, dest, vis)
+
 
     def dfs(self, src, dest):
         path = []
         vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
-        return self.dfs_recursive(path, src, dest, vis)
 
-    def ids_recursive(self, path, src, dest, vis, limit, h):
-        src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
-        vis[src['x']][src['y']] = 1
-        path.append(src)
-        for e in src_cell.neighbors:
-            if h == limit:
+        def dfs_recursive(src_):
+            src_cell = Cell(src_['x'], src_['y'], self.n_x, self.n_y, self.grid)
+            vis[src_['x']][src_['y']] = 1
+            path.append(src_)
+            for e in src_cell.neighbors:
                 if e == dest:
                     path.append(dest)
                     return path
-                else:
-                    return False
+                elif not vis[src_['s']][src_['y']]:
+                    dfs_recursive(e)
 
-            elif not vis[src['s']][src['y']]:
-                h += 1
-                self.ids_recursive(path, e, dest, vis, limit, h)
+        return dfs_recursive(src)
 
     def ids(self, src, dest, limit):
         for l in limit:
             path = []
             vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
-            h = 0
-            rec = self.ids_recursive(path, src, dest, vis, l, h)
+            height = 0
+            def ids_recursive(src_, limit_, height_):
+                src_cell = Cell(src_['x'], src_['y'], self.n_x, self.n_y, self.grid)
+                vis[src_['x']][src_['y']] = 1
+                path.append(src_)
+                for e in src_cell.neighbors:
+                    if height_ == limit_:
+                        if e == dest:
+                            path.append(dest)
+                            return path
+                        else:
+                            return False
+
+                    elif not vis[src_['s']][src_['y']]:
+                        height_ += 1
+                        ids_recursive(e, limit_, height_)
+
+            rec = ids_recursive(src, l, height)
             if rec:
                 return [l, rec]
 
