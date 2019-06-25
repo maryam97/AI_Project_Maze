@@ -78,35 +78,58 @@ class Path:
         dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
         open_list = [src_cell]
         closed_list = []
-        q = None
-        f = inf
-        index = 0
-        for i in range(len(open_list)):
-            if open_list[i].h + open_list[i].g > f:
-                q = open_list[i]
-                f = q.h + q.g
-                index = i
-        open_list.pop(index)
+        done = 0
 
-        for neighbor in q.neighbors:
-            tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
-            if dest_cell.x == tmp.x and dest_cell.y == tmp.y:
-                dest_cell.parent = q
-                return None  # TODO : what should be returned
-            tmp.g = q.g + 1
-            tmp.h = self.heuristic(q.get_xy(), dest_cell.get_xy())
+        while open_list:
+            q = None
+            f = inf
+            index = 0
+            for i in range(len(open_list)):
+                if open_list[i].h + open_list[i].g > f:
+                    q = open_list[i]
+                    f = q.h + q.g
+                    index = i
+            open_list.pop(index)
 
-            for cell in open_list:
-                if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
-                    #  TODO go for next neighbor
+            for neighbor in q.neighbors:
+                tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
+                if dest_cell.x == tmp.x and dest_cell.y == tmp.y:
+                    dest_cell.parent = q
+                    done = 1
+                    break
+                tmp.g = q.g + 1
+                tmp.h = self.heuristic(q.get_xy(), dest_cell.get_xy())
 
-            for cell in closed_list:
-                if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
-                    #  TODO go for next neighbor
+                next_neighbor = 0
+                for cell in open_list:
+                    if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
+                        next_neighbor = 1
+                        break
+                if next_neighbor:
+                    continue
+                for cell in closed_list:
+                    if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
+                        next_neighbor = 1
+                        break
+                if next_neighbor:
+                    continue
+                tmp.parent = q
+                open_list.append(tmp)
+            if done is :
+                break
+            closed_list.append(q)
 
-            tmp.parent = q
-            open_list.append(tmp)
-        closed_list.append(q)
+        if dest_cell.parent is None :
+            return "No path found"
+
+        else:
+            path = []
+            r = dest_cell
+            while r.x != src_cell.x and r.y == src_cell.y:
+                path.append(r)
+                r = r.parent
+            return path
+
 
 
 
