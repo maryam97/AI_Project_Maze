@@ -145,4 +145,26 @@ class Path:
                 r = r.parent
             return path
 
-    def rbfs(self, src, dest):
+    def recursive_best_first_search(self, src, dest, f_limit):
+
+        src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
+        src_cell.g = 0
+        src_cell.h = self.heuristic(src_cell.get_xy(), dest)
+        src_cell.parent = src_cell
+        dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
+
+        def rbfs(node, f):
+            if node.x == dest_cell.x and node.y == dest_cell.y:
+                return 'path found'  # TODO
+            neighbor_nodes = []
+            for neighbor in node.neighbors:
+                tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y)
+                neighbor_nodes.append(tmp)
+            if len(neighbor_nodes) == 0:
+                return 'error'
+
+                return
+
+        return rbfs(src,inf)
+
+
