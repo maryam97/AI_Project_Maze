@@ -92,7 +92,7 @@ class Path:
                         else:
                             return False
 
-                    elif not vis[src_['s']][src_['y']]:
+                    elif not vis[src_['x']][src_['y']]:
                         height_ += 1
                         ids_recursive(e, limit_, height_)
 
@@ -102,7 +102,7 @@ class Path:
 
     def bfs(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
-        q = queue.Queue(maxsize=100)
+        q = queue.Queue(maxsize=1000)
         q.put(src_cell)
         dist = [[inf for _ in range(self.n_y)] for _ in range(self.n_x)]
         dist[src['x']][src['y']] = 0
