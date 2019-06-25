@@ -53,7 +53,7 @@ class Path:
 
         return {'Manhattan': lambda: self.manhattan(src, dest),
                 'Diagonal': lambda: self.diagonal(src, dest),
-                'euclidean': lambda: self.euclidean(src, dest),
+                'Euclidean': lambda: self.euclidean(src, dest),
                 }[self.h_method]()
 
     def dfs(self, src, dest):
@@ -161,20 +161,20 @@ class Path:
                 tmp.f = tmp.g + tmp.h
                 next_neighbor = 0
                 for cell in open_list:
-                    if cell.x == tmp.x and cell.y == tmp.y and cell.f < tmp.f:
+                    if cell.get_xy() == tmp.get_xy() and cell.f < tmp.f:
                         next_neighbor = 1
                         break
                 if next_neighbor:
                     continue
                 for cell in closed_list:
-                    if cell.x == tmp.x and cell.y == tmp.y and cell.f < tmp.f:
+                    if cell.get_xy() == tmp.get_xy() and cell.f < tmp.f:
                         next_neighbor = 1
                         break
                 if next_neighbor:
                     continue
                 tmp.parent = q
                 open_list.append(tmp)
-            if done is None:
+            if done == 1:
                 break
             closed_list.append(q)
 
@@ -183,14 +183,13 @@ class Path:
 
         else:
             path = []
-            r = dest_cell
-            while r.x != src_cell.x and r.y != src_cell.y:
-                path.append(r)
+            r = dest_cell.parent
+            while r.get_xy() != src_cell.get_xy():
+                path.append(r.get_xy())
                 r = r.parent
-            return [path, len(path)]
+            return [[item for item in reversed(path)], len(path)]
 
-    def recursive_best_first_search(self, src, dest):
-
+    def rbfs(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         src_cell.g = 0
         src_cell.h = self.heuristic(src_cell.get_xy(), dest)
@@ -198,8 +197,8 @@ class Path:
         src_cell.parent = src_cell
         dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
 
-        def rbfs(node, f_in):
-            if node.x == dest_cell.x and node.y == dest_cell.y:
+        def rbfs_recursive(node, f_in):
+            if node.get_xy() == dest_cell.get_xy():
                 return node, None
             neighbor_nodes = []
             for neighbor in node.neighbors:
@@ -214,22 +213,28 @@ class Path:
 
             neighbor_nodes.sort(key=lambda x: x.f)
             best = neighbor_nodes[0]
-            alt = neighbor_nodes[1]
+            try:
+                alt = neighbor_nodes[1]
+            except IndexError:
+                alt = Cell(0, 0, self.n_x, self.n_y, self.grid)
+                alt.f = inf
             if best.f > f_in:
                 return None, best.f
-            result, best.f = rbfs(best, min(f_in, alt.f))
+            result, best.f = rbfs_recursive(best, min(f_in, alt.f))
             if result is not None:
-                result.parent = node
+                best.parent = node
                 return result, None
+            else:
+                return None, None
 
-        result, bestf = rbfs(src, inf)
+        result_out, bestf = rbfs_recursive(src_cell, inf)
 
-        if dest_cell.parent is None:
+        if result_out is None:
             return [[], -1]
         else:
             path = []
-            r = dest_cell
-            while r.x != src_cell.x and r.y != src_cell.y:
-                path.append(r)
+            r = result_out.parent
+            while r.get_xy() != src_cell.get_xy():
+                path.append(r.get_xy())
                 r = r.parent
-            return [path, len(path)]
+            return [[item for item in reversed(path)], len(path)]
