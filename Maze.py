@@ -1,6 +1,8 @@
 import math
 
 inf = int(1e5)
+
+
 class Cell:
 
     def __init__(self, x, y, n_x, n_y, table):
@@ -114,7 +116,7 @@ class Path:
                     continue
                 tmp.parent = q
                 open_list.append(tmp)
-            if done is :
+            if done is None:
                 break
             closed_list.append(q)
 
