@@ -101,27 +101,38 @@ class Path:
                 return [l, rec, len(rec)]
 
     def bfs(self, src, dest):
+
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         q = queue.Queue(maxsize=1000)
         q.put(src_cell)
         dist = [[inf for _ in range(self.n_y)] for _ in range(self.n_x)]
         dist[src['x']][src['y']] = 0
-        par = dict()
+        par = {}
+        vis_dest = False
         while not q.empty():
+            if vis_dest:
+                break
             front = q.get()
             for neigh in front.neighbors:
-                if dist[neigh.x][neigh.y] == inf:
-                    dist[neigh.x][neigh.y] = dist[front.x][front.y] + 1
-                    new_cell = Cell(neigh.x, neigh.y, self.n_x, self.n_y, self.grid)
-                    par[new_cell] = front
+                if dist[neigh['x']][neigh['y']] == inf:
+                    dist[neigh['x']][neigh['y']] = dist[front.x][front.y] + 1
+                    new_cell = Cell(neigh['x'], neigh['y'], self.n_x, self.n_y, self.grid)
+                    front_xy = front.get_xy()
+                    par[(neigh['x'], neigh['y'])] = (front_xy['x'], front_xy['y'])
+                    if neigh == dest:
+                        vis_dest = True
+                        break
                     q.put(new_cell)
-        path = []
-        cell = dest
-        while cell != src:
-            path.append(cell)
-            cell = par[cell]
 
-        return [path, len(path)]
+        path = []
+        if vis_dest:
+            src_tmp = (src['x'], src['y'])
+            cell = (dest['x'], dest['y'])
+            while cell != src_tmp:
+                path.append({'x': cell[0], 'y': cell[1]})
+                cell = par[cell]
+
+        return [path[::-1], len(path)]
 
     def a_star(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
