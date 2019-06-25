@@ -55,15 +55,14 @@ class Path:
 
     def dfs_recursive(self, path, src, dest, vis):
         c = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
-        vis[src] = 1
+        vis[src['x']][src['y']] = 1
         path.append(src)
         for e in c.neighbors:
             if e == dest:
                 path.append(dest)
                 return path
-            elif not vis[src]:
+            elif not vis[src['s']][src['y']]:
                 self.dfs_recursive(path, e, dest, vis)
-        return 0
 
     def dfs(self, src, dest):
         path = []
