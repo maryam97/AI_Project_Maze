@@ -70,6 +70,31 @@ class Path:
         vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
         return self.dfs_recursive(path, src, dest, vis)
 
+    def ids_recursive(self, path, src, dest, vis, limit, h):
+        src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
+        vis[src['x']][src['y']] = 1
+        path.append(src)
+        for e in src_cell.neighbors:
+            if h == limit:
+                if e == dest:
+                    path.append(dest)
+                    return path
+                else:
+                    return False
+
+            elif not vis[src['s']][src['y']]:
+                h += 1
+                self.ids_recursive(path, e, dest, vis, limit, h)
+
+    def ids(self, src, dest, limit):
+        for l in limit:
+            path = []
+            vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
+            h = 0
+            rec = self.ids_recursive(path, src, dest, vis, l, h)
+            if rec:
+                return [l, rec]
+
     def bfs(self, src, dist):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         q = queue.Queue(maxsize=100)
