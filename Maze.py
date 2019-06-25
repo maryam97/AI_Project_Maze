@@ -57,6 +57,7 @@ class Path:
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         src_cell.g = 0
         src_cell.h = self.heuristic(src_cell.get_xy())
+        src_cell.parent = src_cell
         dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
         open_list = [src_cell]
         closed_list = []
@@ -73,9 +74,23 @@ class Path:
         for neighbor in q.neighbors:
             tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
             if dest_cell.x == tmp.x and dest_cell.y == tmp.y:
+                dest_cell.parent = q
                 return None  # TODO : what should be returned
             tmp.g = q.g + 1
-            tmp.h = self.heuristic(q.get_xy(),dest_cell.get_xy())
+            tmp.h = self.heuristic(q.get_xy(), dest_cell.get_xy())
+
+            for cell in open_list:
+                if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
+                    #  TODO go for next neighbor
+
+            for cell in closed_list:
+                if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
+                    #  TODO go for next neighbor
+
+            tmp.parent = q
+            open_list.append(tmp)
+        closed_list.append(q)
+
 
 
 
