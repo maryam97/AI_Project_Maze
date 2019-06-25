@@ -56,8 +56,6 @@ class Path:
                 'euclidean': lambda: self.euclidean(src, dest),
                 }[self.h_method]()
 
-
-
     def dfs(self, src, dest):
         path = []
         vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
@@ -80,6 +78,7 @@ class Path:
             path = []
             vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
             height = 0
+
             def ids_recursive(src_, limit_, height_):
                 src_cell = Cell(src_['x'], src_['y'], self.n_x, self.n_y, self.grid)
                 vis[src_['x']][src_['y']] = 1
@@ -202,7 +201,7 @@ class Path:
                 result.parent = node
                 return result, None
 
-        result, bestf = rbfs(src, inf)
+        result_out, bestf = rbfs(src, inf)
 
         if dest_cell.parent is None:
             return "No path found"
