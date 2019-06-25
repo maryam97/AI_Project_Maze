@@ -55,23 +55,20 @@ class Path:
                 'euclidean': lambda: self.euclidean(src, dest),
                 }[self.h_method]()
 
-
+    def dfs_recursive(self, path, src, dest, vis):
+        c = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
+        vis[src['x']][src['y']] = 1
+        path.append(src)
+        for e in c.neighbors:
+            if e == dest:
+                path.append(dest)
+                return path
+            elif not vis[src['s']][src['y']]:
+                self.dfs_recursive(path, e, dest, vis)
 
     def dfs(self, src, dest):
         path = []
         vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
-
-        def dfs_recursive(self, path, src, dest, vis):
-            c = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
-            vis[src['x']][src['y']] = 1
-            path.append(src)
-            for e in c.neighbors:
-                if e == dest:
-                    path.append(dest)
-                    return path
-                elif not vis[src['s']][src['y']]:
-                    self.dfs_recursive(path, e, dest, vis)
-
         return self.dfs_recursive(path, src, dest, vis)
 
     def a_star(self, src, dest):
