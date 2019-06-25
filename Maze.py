@@ -42,7 +42,7 @@ class Path:
 
     @staticmethod
     def diagonal(src, dest):
-        return max(abs(src['x'] - dest['x']) , abs(src['y'] - dest['y']))
+        return max(abs(src['x'] - dest['x']), abs(src['y'] - dest['y']))
 
     @staticmethod
     def euclidean(src, dest):
@@ -55,26 +55,29 @@ class Path:
                 'euclidean': lambda: self.euclidean(src, dest),
                 }[self.h_method]()
 
-    def dfs_recursive(self, path, src, dest, vis):
-        c = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
-        vis[src['x']][src['y']] = 1
-        path.append(src)
-        for e in c.neighbors:
-            if e == dest:
-                path.append(dest)
-                return path
-            elif not vis[src['s']][src['y']]:
-                self.dfs_recursive(path, e, dest, vis)
+
 
     def dfs(self, src, dest):
         path = []
         vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
+
+        def dfs_recursive(self, path, src, dest, vis):
+            c = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
+            vis[src['x']][src['y']] = 1
+            path.append(src)
+            for e in c.neighbors:
+                if e == dest:
+                    path.append(dest)
+                    return path
+                elif not vis[src['s']][src['y']]:
+                    self.dfs_recursive(path, e, dest, vis)
+
         return self.dfs_recursive(path, src, dest, vis)
 
     def a_star(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         src_cell.g = 0
-        src_cell.h = self.heuristic(src_cell.get_xy())
+        src_cell.h = self.heuristic(src_cell.get_xy(), dest)
         src_cell.parent = src_cell
         dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
         open_list = [src_cell]
@@ -120,7 +123,7 @@ class Path:
                 break
             closed_list.append(q)
 
-        if dest_cell.parent is None :
+        if dest_cell.parent is None:
             return "No path found"
 
         else:
@@ -131,14 +134,4 @@ class Path:
                 r = r.parent
             return path
 
-
-
-
-
-
-
-
-
-
-
-
+    def rbfs(self, src, dest):
