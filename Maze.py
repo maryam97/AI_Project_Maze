@@ -131,7 +131,7 @@ class Path:
             while cell != src_tmp:
                 path.append({'x': cell[0], 'y': cell[1]})
                 cell = par[cell]
-
+        path.append(src)
         return [path[::-1], len(path)]
 
     def a_star(self, src, dest):

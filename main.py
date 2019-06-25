@@ -19,8 +19,12 @@ def test_a_star(table):
             print(path, length)
 
 
-def bfs_(path, src, dest):
-    return path.bfs(src, dest)
+def test_bfs(table):
+    for (A, B) in [({'x': 3, 'y': 8}, {'x': 5, 'y': 8}), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
+        print('Source: ' + str(A) + ' destination: ' + str(B))
+        bfs = Path(table, 'Manhattan')  # heuristic isn't important hear
+        path, length = bfs.bfs(A, B)
+        print(path, length)
 
 
 def read_table(path):
@@ -34,9 +38,9 @@ def read_table(path):
 
 if __name__ == "__main__":
     table = read_table('map.txt')
-    path = Path(table, heuristic='Manhattan')
-    src_cell = {'x': 3, 'y': 8}
-    dest_cell = {'x': 5, 'y': 8}
-    print(bfs_(path, src_cell, dest_cell))
+    print("BFS:")
+    test_bfs(table)
+    print("A_STAR:")
     test_a_star(table)
+    print("RBFS:")
     test_rbfs(table)
