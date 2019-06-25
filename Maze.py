@@ -168,7 +168,7 @@ class Path:
             closed_list.append(q)
 
         if dest_cell.parent is None:
-            return "No path found"
+            return [[], -1]
 
         else:
             path = []
@@ -176,7 +176,7 @@ class Path:
             while r.x != src_cell.x and r.y == src_cell.y:
                 path.append(r)
                 r = r.parent
-            return path
+            return [path, len(path)]
 
     def recursive_best_first_search(self, src, dest):
 
@@ -214,13 +214,11 @@ class Path:
         result_out, bestf = rbfs(src, inf)
 
         if dest_cell.parent is None:
-            return "No path found"
+            return [[], -1]
         else:
             path = []
             r = dest_cell
-            while r.x != src_cell.x and r.y == src_cell.y:
+            while r.x != src_cell.x and r.y != src_cell.y:
                 path.append(r)
                 r = r.parent
-            return path
-
-
+            return [path, len(path)]
