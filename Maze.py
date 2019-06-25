@@ -71,7 +71,8 @@ class Path:
                 elif not vis[src_['s']][src_['y']]:
                     dfs_recursive(e)
 
-        return dfs_recursive(src)
+        dfs_path = dfs_recursive(src)
+        return [dfs_path, len(dfs_path)]
 
     def ids(self, src, dest, limit):
         for l in limit:
@@ -97,7 +98,7 @@ class Path:
 
             rec = ids_recursive(src, l, height)
             if rec:
-                return [l, rec]
+                return [l, rec, len(rec)]
 
     def bfs(self, src, dist):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
@@ -105,13 +106,22 @@ class Path:
         q.put(src_cell)
         dist = [[inf for _ in range(self.n_y)] for _ in range(self.n_x)]
         dist[src['x']][src['y']] = 0
+        par = dict()
         while not q.empty():
-            t = q.get()
-            for neigh in t.neighbors:
+            front = q.get()
+            for neigh in front.neighbors:
                 if dist[neigh.x][neigh.y] == inf:
-                    dist[neigh.x][neigh.y] = dist[t.x][t.y] + 1
+                    dist[neigh.x][neigh.y] = dist[front.x][front.y] + 1
                     new_cell = Cell(neigh.x, neigh.y, self.n_x, self.n_y, self.grid)
+                    par[new_cell] = front
                     q.put(new_cell)
+        path = []
+        cell = dist
+        while cell != src:
+            path.append(cell)
+            cell = par[cell]
+
+        return [path, len(path)]
 
     def a_star(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
