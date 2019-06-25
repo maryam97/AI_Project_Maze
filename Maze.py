@@ -1,6 +1,6 @@
 import math
 
-
+inf = int(1e5)
 class Cell:
 
     def __init__(self, x, y, n_x, n_y, table):
@@ -57,8 +57,30 @@ class Path:
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         src_cell.g = 0
         src_cell.h = self.heuristic(src_cell.get_xy())
+        dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
         open_list = [src_cell]
         closed_list = []
+        q = None
+        f = inf
+        index = 0
+        for i in range(len(open_list)):
+            if open_list[i].h + open_list[i].g > f:
+                q = open_list[i]
+                f = q.h + q.g
+                index = i
+        open_list.pop(index)
+
+        for neighbor in q.neighbors:
+            tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
+            if dest_cell.x == tmp.x and dest_cell.y == tmp.y:
+                return None  # TODO : what should be returned
+            tmp.g = q.g + 1
+            tmp.h = self.heuristic(q.get_xy(),dest_cell.get_xy())
+
+
+
+
+
 
 
 
