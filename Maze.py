@@ -1,7 +1,6 @@
 import math
-
+import queue
 inf = int(1e5)
-
 
 class Cell:
 
@@ -70,6 +69,21 @@ class Path:
         path = []
         vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
         return self.dfs_recursive(path, src, dest, vis)
+
+    def bfs(self, src, dist):
+        c = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
+        q = queue.Queue(maxsize=100)
+        q.put(c)
+        dist = [[inf for _ in range(self.n_y)] for _ in range(self.n_x)]
+        dist[src['x']][src['y']] = 0
+        while not q.empty():
+            t = q.get()
+            for neigh in t.neighbors:
+                if dist[neigh.x][neigh.y] == inf:
+                    dist[neigh.x][neigh.y] = dist[t.x][t.y] + 1
+                    new_c = Cell(neigh.x, neigh.y, self.n_x, self.n_y, self.grid)
+                    q.put(new_c)
+
 
     def a_star(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
