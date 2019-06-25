@@ -68,7 +68,7 @@ class Path:
                 if e == dest:
                     path.append(dest)
                     return path
-                elif not vis[src_['s']][src_['y']]:
+                elif not vis[src_['x']][src_['y']]:
                     dfs_recursive(e)
 
         dfs_path = dfs_recursive(src)
