@@ -2,6 +2,7 @@ import math
 import queue
 inf = int(1e5)
 
+
 class Cell:
 
     def __init__(self, x, y, n_x, n_y, table):
@@ -11,6 +12,7 @@ class Cell:
         self.n_x = n_x
         self.g = None
         self.h = None
+        self.f = None
         self.parent = None
         self.neighbors = []
         if x - 1 >= 0 and table[x-1][y] != 1:
@@ -84,11 +86,11 @@ class Path:
                     new_c = Cell(neigh.x, neigh.y, self.n_x, self.n_y, self.grid)
                     q.put(new_c)
 
-
     def a_star(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         src_cell.g = 0
         src_cell.h = self.heuristic(src_cell.get_xy(), dest)
+        src_cell.f = src_cell.g + src_cell.h
         src_cell.parent = src_cell
         dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
         open_list = [src_cell]
@@ -96,15 +98,9 @@ class Path:
         done = 0
 
         while open_list:
-            q = None
-            f = inf
-            index = 0
-            for i in range(len(open_list)):
-                if open_list[i].h + open_list[i].g > f:
-                    q = open_list[i]
-                    f = q.h + q.g
-                    index = i
-            open_list.pop(index)
+            open_list.sort(key=lambda x: x.f)
+            q = open_list[0]
+            open_list.pop(0)
 
             for neighbor in q.neighbors:
                 tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
@@ -114,16 +110,16 @@ class Path:
                     break
                 tmp.g = q.g + 1
                 tmp.h = self.heuristic(q.get_xy(), dest_cell.get_xy())
-
+                tmp.f = tmp.g + tmp.h
                 next_neighbor = 0
                 for cell in open_list:
-                    if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
+                    if cell.x == tmp.x and cell.y == tmp.y and cell.f < tmp.f:
                         next_neighbor = 1
                         break
                 if next_neighbor:
                     continue
                 for cell in closed_list:
-                    if cell.x == tmp.x and cell.y == tmp.y and cell.g + cell.h < tmp.g + tmp.h:
+                    if cell.x == tmp.x and cell.y == tmp.y and cell.f < tmp.f:
                         next_neighbor = 1
                         break
                 if next_neighbor:
@@ -145,26 +141,49 @@ class Path:
                 r = r.parent
             return path
 
-    def recursive_best_first_search(self, src, dest, f_limit):
+    def recursive_best_first_search(self, src, dest):
 
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         src_cell.g = 0
         src_cell.h = self.heuristic(src_cell.get_xy(), dest)
+        src_cell.f = src_cell.g + src_cell.h
         src_cell.parent = src_cell
         dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
 
-        def rbfs(node, f):
+        def rbfs(node, f_in):
             if node.x == dest_cell.x and node.y == dest_cell.y:
-                return 'path found'  # TODO
+                return node, None
             neighbor_nodes = []
             for neighbor in node.neighbors:
-                tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y)
+                tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
                 neighbor_nodes.append(tmp)
             if len(neighbor_nodes) == 0:
-                return 'error'
+                return None, inf
+            for i in range(len(neighbor_nodes)):
+                neighbor_nodes[i].g = node.g + 1
+                neighbor_nodes[i].h = self.heuristic(neighbor_nodes[i].get_xy(), dest_cell.get_xy())
+                neighbor_nodes[i].f = max(neighbor_nodes[i].g + neighbor_nodes[i].h, node.f)
 
-                return
+            neighbor_nodes.sort(key=lambda x: x.f)
+            best = neighbor_nodes[0]
+            alt = neighbor_nodes[1]
+            if best.f > f_in:
+                return None, best.f
+            result, best.f = rbfs(best, min(f_in, alt.f))
+            if result is not None:
+                result.parent = node
+                return result, None
 
-        return rbfs(src,inf)
+        result, bestf = rbfs(src, inf)
+
+        if dest_cell.parent is None:
+            return "No path found"
+        else:
+            path = []
+            r = dest_cell
+            while r.x != src_cell.x and r.y == src_cell.y:
+                path.append(r)
+                r = r.parent
+            return path
 
 
