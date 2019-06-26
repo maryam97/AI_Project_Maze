@@ -117,8 +117,7 @@ class Path:
                 if dist[neigh['x']][neigh['y']] == inf:
                     dist[neigh['x']][neigh['y']] = dist[front.x][front.y] + 1
                     new_cell = Cell(neigh['x'], neigh['y'], self.n_x, self.n_y, self.grid)
-                    front_xy = front.get_xy()
-                    par[(neigh['x'], neigh['y'])] = (front_xy['x'], front_xy['y'])
+                    par[(neigh['x'], neigh['y'])] = (front.x, front.y)
                     if neigh == dest:
                         vis_dest = True
                         break
