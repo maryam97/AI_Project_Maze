@@ -30,7 +30,7 @@ class Cell:
 
 class Path:
 
-    def __init__(self, table, heuristic):
+    def __init__(self, table, heuristic='Manhattan'):
         self.grid = table
         self.h_method = heuristic
         self.optimal_solution = []
