@@ -20,7 +20,7 @@ def test_a_star(table):
 
 
 def test_bfs(table):
-    for (A, B) in [({'x': 3, 'y': 8}, {'x': 5, 'y': 8}), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
+    for (A, B) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
         print('Source: ' + str(A) + ' destination: ' + str(B))
         bfs = Path(table, 'Manhattan')  # heuristic isn't important hear
         path, length = bfs.bfs(A, B)
