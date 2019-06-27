@@ -37,15 +37,12 @@ def test_dfs(table):
 
 def read_table(path):
     f = open(path, 'r')
-
     table = []
     for line in f.readlines():
         table.append([int(x) for x in line.split(sep=' ')])
 
     table = [x for x in reversed(table)]
     return list(map(list, zip(*table)))
-
-
 
 
 if __name__ == "__main__":
