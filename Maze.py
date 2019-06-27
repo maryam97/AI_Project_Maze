@@ -57,22 +57,27 @@ class Path:
                 }[self.h_method]()
 
     def dfs(self, src, dest):
-        path = []
-        vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
+        vis = []
+        par = {}
 
         def dfs_recursive(src_):
             src_cell = Cell(src_['x'], src_['y'], self.n_x, self.n_y, self.grid)
-            vis[src_['x']][src_['y']] = 1
-            path.append(src_)
+            vis.append(src_)
             for e in src_cell.neighbors:
-                if e == dest:
-                    path.append(dest)
-                    return path
-                elif not vis[src_['x']][src_['y']]:
+                if e not in vis:
+                    par[(e['x'], e['y'])] = (src_cell.x, src_cell.y)
                     dfs_recursive(e)
 
-        dfs_path = dfs_recursive(src)
-        return [dfs_path, len(dfs_path)]
+        dfs_recursive(src)
+        path = []
+        src_tmp = (src['x'], src['y'])
+        cell = (dest['x'], dest['y'])
+        if par[cell]:
+            while cell != src_tmp:
+                path.append({'x': cell[0], 'y': cell[1]})
+                cell = par[cell]
+            path.append(src)
+        return [path[::-1], len(path)]
 
     def ids(self, src, dest, limit):
         for l in limit:

@@ -27,6 +27,14 @@ def test_bfs(table):
         print(path, length)
 
 
+def test_dfs(table):
+    for (A, B) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
+        print('Source: ' + str(A) + ' destination: ' + str(B))
+        dfs = Path(table)
+        path, length = dfs.dfs(A, B)
+        print(path, length)
+
+
 def read_table(path):
     f = open(path, 'r')
 
@@ -40,6 +48,8 @@ if __name__ == "__main__":
     table = read_table('map.txt')
     print("BFS:")
     test_bfs(table)
+    print("DFS:")
+    test_dfs(table)
     print("A_STAR:")
     test_a_star(table)
     print("RBFS:")
