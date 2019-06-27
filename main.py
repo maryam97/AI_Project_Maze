@@ -2,7 +2,7 @@ from Maze import Path
 
 
 def test_rbfs(table):
-    for (A, B) in [({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
+    for (A, B) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}),({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
         for method in ['Manhattan', 'Diagonal', 'Euclidean']:
             print("Hueristic " + str(method) + ' source: ' + str(A) + ' destination: ' + str(B))
             rbfs = Path(table, method)
@@ -41,7 +41,11 @@ def read_table(path):
     table = []
     for line in f.readlines():
         table.append([int(x) for x in line.split(sep=' ')])
-    return [x for x in reversed(table)]
+
+    table = [x for x in reversed(table)]
+    return list(map(list, zip(*table)))
+
+
 
 
 if __name__ == "__main__":
