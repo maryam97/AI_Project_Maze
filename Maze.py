@@ -80,30 +80,11 @@ class Path:
         return [path[::-1], len(path)]
 
     def ids(self, src, dest, limit):
-        for l in limit:
-            path = []
-            vis = [[int(0) for _ in range(self.n_y)] for _ in range(self.n_x)]
-            height = 0
-
-            def ids_recursive(src_, limit_, height_):
-                src_cell = Cell(src_['x'], src_['y'], self.n_x, self.n_y, self.grid)
-                vis[src_['x']][src_['y']] = 1
-                path.append(src_)
-                for e in src_cell.neighbors:
-                    if height_ == limit_:
-                        if e == dest:
-                            path.append(dest)
-                            return path
-                        else:
-                            return False
-
-                    elif not vis[src_['x']][src_['y']]:
-                        height_ += 1
-                        ids_recursive(e, limit_, height_)
-
-            rec = ids_recursive(src, l, height)
-            if rec:
-                return [l, rec, len(rec)]
+        sol_len = 0
+        path, length = self.dfs(src, dest)
+        if len(path) <= limit + 1:
+            sol_len = len(path)
+        return [sol_len, path[::-1], len(path)]
 
     def bfs(self, src, dest):
 

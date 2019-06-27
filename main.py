@@ -35,6 +35,19 @@ def test_dfs(table):
         print(path, length)
 
 
+def test_ids(table):
+    for (A, B, l) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}, 3), ({'x': 8, 'y': 3}, {'x': 8, 'y': 6}, 15),
+                      ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}, 10), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}, 30)]:
+        print('Source: ' + str(A) + ' destination: ' + str(B) + ' maximum depth: ' + str(l))
+        ids = Path(table)
+        limit, path, length = ids.ids(A, B, l)
+        if limit:
+            print('The length ids has reached to destination is: ' + str(limit))
+            print(path)
+        else:
+            print("ids can't reach to destination with this limit!")
+
+
 def read_table(path):
     f = open(path, 'r')
     table = []
@@ -51,6 +64,8 @@ if __name__ == "__main__":
     test_bfs(table)
     print("DFS:")
     test_dfs(table)
+    print("IDS:")
+    test_ids(table)
     print("A_STAR:")
     test_a_star(table)
     print("RBFS:")
