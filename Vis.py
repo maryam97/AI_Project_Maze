@@ -1,6 +1,7 @@
 from pygame.locals import *
 import pygame
 from Maze import Path
+import time
 
 
 class Maze:
@@ -16,10 +17,13 @@ class Maze:
                     # display_surf.blit(image_surf, (i * 44, (self.N - j - 1) * 44))
                     display_surf.blit(image_surf, (i * 44, j * 44))
 
-
     def draw_path(self, display_surf, path_surf, path):
         for item in path:
             display_surf.blit(path_surf, (item['x']*44, item['y']*44))
+            # self._display_surf.blit(self._image_surf, ((path[0]['x']) * 44, path[0]['y'] * 44))
+            # self._display_surf.blit(self._end_surf, (path[-1]['x'] * 44, path[-1]['y'] * 44))
+            # pygame.display.flip()
+            # time.sleep(1)
             # display_surf.blit(path_surf, (item['x']*44, (self.N - item['y'] - 1)*44))
 
 
@@ -63,13 +67,12 @@ class App:
         self._display_surf.fill((0, 0, 0))
         self.maze.draw(self._display_surf, self._block_surf)
         instance = Path(self.grid, "Euclidean")
-        path, length = instance.a_star({'x': 13, 'y': 1}, {'x': 13, 'y': 11})
+        path, length = instance.rbfs({'x': 1, 'y': 1}, {'x': 1, 'y': 3})
         self.maze.draw_path(self._display_surf, self._path_surf, path)
         # self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, (self.N - path[0]['y']-1)*44))
         # self._display_surf.blit(self._end_surf, (path[-1]['x']*44, (self.N - path[-1]['y']-1)*44))
         self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, path[0]['y']*44))
         self._display_surf.blit(self._end_surf, (path[-1]['x']*44, path[-1]['y']*44))
-
 
         pygame.display.flip()
 
