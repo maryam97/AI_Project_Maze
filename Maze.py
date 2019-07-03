@@ -185,7 +185,7 @@ class Path:
 
         def rbfs_recursive(node, f_in):
             if node.get_xy() == dest_cell.get_xy():
-                return node, None
+                return node, 0
             neighbor_nodes = []
             for neighbor in node.neighbors:
                 tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
@@ -197,22 +197,21 @@ class Path:
                 neighbor_nodes[i].h = self.heuristic(neighbor_nodes[i].get_xy(), dest_cell.get_xy())
                 neighbor_nodes[i].f = max(neighbor_nodes[i].g + neighbor_nodes[i].h, node.f)
 
-            neighbor_nodes.sort(key=lambda x: x.f)
-            best = neighbor_nodes[0]
-            try:
-                alt = neighbor_nodes[1]
-            except IndexError:
-                alt = Cell(0, 0, self.n_x, self.n_y, self.grid)
-                alt.f = inf
-            if best.f > f_in:
-                return None, best.f
-            result, best.f = rbfs_recursive(best, min(f_in, alt.f))
-            if result is not None:
-                best.parent = node
-                return result, None
-            else:
-                return None, None
+            while True:
+                neighbor_nodes.sort(key=lambda x: x.f)
+                best = neighbor_nodes[0]
+                if best.f > f_in:
+                    return None, best.f
+                try:
+                    alt = neighbor_nodes[1]
+                    result, best.f = rbfs_recursive(best, min(f_in, alt.f))
 
+                except IndexError:
+                    result, best.f = rbfs_recursive(best, f_in)
+
+                if result is not None:
+                    best.parent = node
+                    return result, best.f
         result_out, bestf = rbfs_recursive(src_cell, inf)
 
         if result_out is None:

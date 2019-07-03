@@ -55,7 +55,8 @@ def read_table(path):
         table.append([int(x) for x in line.split(sep=' ')])
 
     table = [x for x in reversed(table)]
-    return list(map(list, zip(*table)))
+    # return list(map(list, zip(*table)))
+    return table
 
 
 if __name__ == "__main__":
