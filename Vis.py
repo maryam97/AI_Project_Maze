@@ -3,26 +3,6 @@ import pygame
 from Maze import Path
 
 
-class Player:
-
-    def __init__(self, x, y):
-        self.x = 44 * x
-        self.y = 44 * y
-        self.speed = 10
-
-    def moveRight(self):
-        self.x = self.x + self.speed
-
-    def moveLeft(self):
-        self.x = self.x - self.speed
-
-    def moveUp(self):
-        self.y = self.y - self.speed
-
-    def moveDown(self):
-        self.y = self.y + self.speed
-
-
 class Maze:
     def __init__(self, grid):
         self.M = len(grid[0])
@@ -30,23 +10,17 @@ class Maze:
         self.maze = grid
 
     def draw(self, display_surf, image_surf):
-        bx = 0
-        by = 0
         for i in range(len(self.maze)):
             for j in range(len(self.maze[0])):
                 if self.maze[i][j] == 1:
+                    # display_surf.blit(image_surf, (i * 44, (self.N - j - 1) * 44))
                     display_surf.blit(image_surf, (i * 44, j * 44))
 
-            bx = bx + 1
-            if bx > self.M - 1:
-                bx = 0
-                by = by + 1
 
     def draw_path(self, display_surf, path_surf, path):
         for item in path:
-            # display_surf.blit(path_surf, (item['x']*44, (self.N-item['y']-1)*44))
             display_surf.blit(path_surf, (item['x']*44, item['y']*44))
-
+            # display_surf.blit(path_surf, (item['x']*44, (self.N - item['y'] - 1)*44))
 
 
 class App:
@@ -62,7 +36,6 @@ class App:
         self._block_surf = None
         self._path_surf = None
         self._end_surf = None
-        self.player = Player(8, 3)
         self.grid = grid
         self.M = len(grid[0])
         self.N = len(grid)
@@ -72,7 +45,7 @@ class App:
         pygame.init()
         self._display_surf = pygame.display.set_mode((self.windowWidth, self.windowHeight), pygame.HWSURFACE)
 
-        pygame.display.set_caption('Pygame pythonspot.com example')
+        pygame.display.set_caption('AI MAZE')
         self._running = True
         self._image_surf = pygame.image.load("player.png").convert()
         self._block_surf = pygame.image.load("block.png").convert()
@@ -90,7 +63,7 @@ class App:
         self._display_surf.fill((0, 0, 0))
         self.maze.draw(self._display_surf, self._block_surf)
         instance = Path(self.grid, "Euclidean")
-        path, length = instance.a_star({'x': 1, 'y': 1}, {'x': 5, 'y': 5})
+        path, length = instance.rbfs({'x': 1, 'y': 1}, {'x': 5, 'y': 5})
         self.maze.draw_path(self._display_surf, self._path_surf, path)
         # self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, (self.N - path[0]['y']-1)*44))
         # self._display_surf.blit(self._end_surf, (path[-1]['x']*44, (self.N - path[-1]['y']-1)*44))
