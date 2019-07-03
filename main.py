@@ -1,51 +1,6 @@
-from Maze import Path
+import tkinter as tk
+from tkinter import ttk
 from Vis import App
-
-def test_rbfs(table):
-    for (A, B) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}),({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
-        for method in ['Manhattan', 'Diagonal', 'Euclidean']:
-            print("Hueristic " + str(method) + ' source: ' + str(A) + ' destination: ' + str(B))
-            rbfs = Path(table, method)
-            path, length = rbfs.rbfs(A, B)
-            print(path, length)
-
-
-def test_a_star(table):
-    for (A, B) in [({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
-        for method in ['Manhattan', 'Diagonal', 'Euclidean']:
-            print("Hueristic " + str(method) + ' source: ' + str(A) + ' destination: ' + str(B))
-            a_star = Path(table, method)
-            path, length = a_star.a_star(A, B)
-            print(path, length)
-
-
-def test_bfs(table):
-    for (A, B) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
-        print('Source: ' + str(A) + ' destination: ' + str(B))
-        bfs = Path(table)
-        path, length = bfs.bfs(A, B)
-        print(path, length)
-
-
-def test_dfs(table):
-    for (A, B) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}), ({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
-        print('Source: ' + str(A) + ' destination: ' + str(B))
-        dfs = Path(table)
-        path, length = dfs.dfs(A, B)
-        print(path, length)
-
-
-def test_ids(table):
-    for (A, B, l) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}, 3), ({'x': 8, 'y': 3}, {'x': 8, 'y': 6}, 15),
-                      ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}, 10), ({'x': 1, 'y': 1}, {'x': 8, 'y': 1}, 30)]:
-        print('Source: ' + str(A) + ' destination: ' + str(B) + ' maximum depth: ' + str(l))
-        ids = Path(table)
-        limit, path, length = ids.ids(A, B, l)
-        if limit:
-            print('The length ids has reached to destination is: ' + str(limit))
-            print(path)
-        else:
-            print("ids can't reach to destination with this limit!")
 
 
 def read_table(path):
@@ -59,7 +14,77 @@ def read_table(path):
     return table
 
 
-if __name__ == "__main__":
-    table = read_table('map.txt')
-    theApp = App(table)
+def OK(entries):
+    print(entries)
+    table = read_table(entries['Map File Path'].get())
+    src = {'x': int(entries['Source X'].get()), 'y': int(entries['Source Y'].get())}
+    dest = {'x': int(entries['Destination X'].get()), 'y': int(entries['Destination Y'].get())}
+    theApp = App(table, entries['Algorithms'].get(), src, dest, entries['Heuristics'].get())
     theApp.on_execute()
+    root.quit()
+
+
+def make_form(root, fields):
+    entries = {}
+    for field in fields:
+        print(field)
+        row = tk.Frame(root)
+        lab = tk.Label(row, width=22, text=field+": ", anchor='w')
+        ent = tk.Entry(row)
+        row.pack(side=tk.TOP,
+                 fill=tk.X,
+                 padx=5,
+                 pady=5)
+        lab.pack(side=tk.LEFT)
+        ent.pack(side=tk.RIGHT,
+                 expand=tk.YES,
+                 fill=tk.X)
+        entries[field] = ent
+
+    row = tk.Frame(root)
+    lab = tk.Label(row, width=22, text="Algorithms: ", anchor='w')
+    ent = ttk.Combobox(row, values=[
+                                    "A*",
+                                    "RBFS",
+                                    "BFS",
+                                    "DFS",
+                                    "IDS"])
+    row.pack(side=tk.TOP,
+             fill=tk.X,
+             padx=5,
+             pady=5)
+    lab.pack(side=tk.LEFT)
+    ent.pack(side=tk.RIGHT,
+             expand=tk.YES,
+             fill=tk.X)
+    entries['Algorithms'] = ent
+
+    row = tk.Frame(root)
+    lab = tk.Label(row, width=22, text="Heuristics: ", anchor='w')
+    ent = ttk.Combobox(row, values=[
+        "Manhattan",
+        "Euclidean",
+        "Diagonal"])
+    row.pack(side=tk.TOP,
+             fill=tk.X,
+             padx=5,
+             pady=5)
+    lab.pack(side=tk.LEFT)
+    ent.pack(side=tk.RIGHT,
+             expand=tk.YES,
+             fill=tk.X)
+    entries['Heuristics'] = ent
+
+    return entries
+
+
+if __name__ == '__main__':
+    fields_text = ('Map File Path', 'Source X', 'Source Y', 'Destination X', 'Destination Y')
+    root = tk.Tk()
+    ents = make_form(root, fields_text)
+    b1 = tk.Button(root, text='Ok',
+           command=(lambda e=ents: OK(e)))
+    b1.pack(side=tk.LEFT, padx=5, pady=5)
+    b3 = tk.Button(root, text='Quit', command=root.quit)
+    b3.pack(side=tk.LEFT, padx=5, pady=5)
+    root.mainloop()

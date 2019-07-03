@@ -32,7 +32,7 @@ class App:
     windowHeight = 600
     player = 0
 
-    def __init__(self, grid):
+    def __init__(self, grid, search_method, src, dest, h_method):
         self._running = True
         self.done = False
         self._display_surf = None
@@ -44,6 +44,10 @@ class App:
         self.M = len(grid[0])
         self.N = len(grid)
         self.maze = Maze(grid)
+        self.search_method = search_method
+        self.src = src
+        self.dest = dest
+        self.h_method = h_method
 
     def on_init(self):
         pygame.init()
@@ -66,8 +70,8 @@ class App:
     def on_render(self):
         self._display_surf.fill((0, 0, 0))
         self.maze.draw(self._display_surf, self._block_surf)
-        instance = Path(self.grid, "Euclidean")
-        path, length = instance.rbfs({'x': 1, 'y': 1}, {'x': 1, 'y': 3})
+        instance = Path(self.grid, self.h_method,self.search_method)
+        path, length = instance.search(self.src, self.dest)
         self.maze.draw_path(self._display_surf, self._path_surf, path)
         # self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, (self.N - path[0]['y']-1)*44))
         # self._display_surf.blit(self._end_surf, (path[-1]['x']*44, (self.N - path[-1]['y']-1)*44))
@@ -83,6 +87,7 @@ class App:
     def on_execute(self):
 
         if self.on_init() == False:
+
             self._running = False
 
         while self._running:

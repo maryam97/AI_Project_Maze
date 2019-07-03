@@ -30,9 +30,10 @@ class Cell:
 
 class Path:
 
-    def __init__(self, table, heuristic='Manhattan'):
+    def __init__(self, table, heuristic='Manhattan', search='A*'):
         self.grid = table
         self.h_method = heuristic
+        self.search_method = search
         self.optimal_solution = []
         self.n_x = len(table)
         self.n_y = len(table[0])
@@ -225,3 +226,11 @@ class Path:
                 r = r.parent
             path.append(src_cell.get_xy())
             return [[item for item in reversed(path)], len(path)]
+
+    def search(self, src, dest, limit= inf):
+        return {'A*': lambda: self.a_star(src, dest),
+                'RBFS': lambda: self.rbfs(src, dest),
+                'BFS': lambda: self.bfs(src, dest),
+                'DFS': lambda: self.dfs(src, dest),
+                'IDS': lambda: self.ids(src, dest),
+                }[self.search_method]()
