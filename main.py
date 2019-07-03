@@ -1,5 +1,5 @@
 from Maze import Path
-
+from Vis import App
 
 def test_rbfs(table):
     for (A, B) in [({'x': 8, 'y': 3}, {'x': 8, 'y': 6}),({'x': 1, 'y': 1}, {'x': 1, 'y': 3})]:
@@ -61,12 +61,15 @@ def read_table(path):
 if __name__ == "__main__":
     table = read_table('map.txt')
     print("BFS:")
-    test_bfs(table)
+    #test_bfs(table)
     print("DFS:")
-    test_dfs(table)
+    #test_dfs(table)
     print("IDS:")
-    test_ids(table)
+    #test_ids(table)
     print("A_STAR:")
-    test_a_star(table)
+    #test_a_star(table)
     print("RBFS:")
-    test_rbfs(table)
+    #test_rbfs(table)
+
+    theApp = App(table)
+    theApp.on_execute()

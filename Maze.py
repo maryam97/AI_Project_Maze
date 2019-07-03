@@ -172,7 +172,7 @@ class Path:
             while r.get_xy() != src_cell.get_xy():
                 path.append(r.get_xy())
                 r = r.parent
-            path.append(src_cell)
+            path.append(src_cell.get_xy())
             return [[item for item in reversed(path)], len(path)]
 
     def rbfs(self, src, dest):
@@ -223,5 +223,5 @@ class Path:
             while r.get_xy() != src_cell.get_xy():
                 path.append(r.get_xy())
                 r = r.parent
-            path.append(src_cell)
+            path.append(src_cell.get_xy())
             return [[item for item in reversed(path)], len(path)]
