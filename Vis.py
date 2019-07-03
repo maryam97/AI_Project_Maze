@@ -63,7 +63,7 @@ class App:
         self._display_surf.fill((0, 0, 0))
         self.maze.draw(self._display_surf, self._block_surf)
         instance = Path(self.grid, "Euclidean")
-        path, length = instance.rbfs({'x': 1, 'y': 1}, {'x': 5, 'y': 5})
+        path, length = instance.a_star({'x': 13, 'y': 1}, {'x': 13, 'y': 11})
         self.maze.draw_path(self._display_surf, self._path_surf, path)
         # self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, (self.N - path[0]['y']-1)*44))
         # self._display_surf.blit(self._end_surf, (path[-1]['x']*44, (self.N - path[-1]['y']-1)*44))
