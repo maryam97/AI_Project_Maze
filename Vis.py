@@ -48,8 +48,7 @@ class Maze:
 
     def draw_path(self, display_surf, path_surf, path):
         for item in path:
-            display_surf.blit(path_surf, (item['x']*44, item['y']*44))
-
+            display_surf.blit(path_surf, (item['x']*44, (self.N-item['y']-1)*44))
 
 
 class App:
@@ -67,6 +66,8 @@ class App:
         self._end_surf = None
         self.player = Player(8, 3)
         self.grid = grid
+        self.M = len(grid[0])
+        self.N = len(grid)
         self.maze = Maze(grid)
 
     def on_init(self):
@@ -79,6 +80,7 @@ class App:
         self._block_surf = pygame.image.load("block.png").convert()
         self._path_surf = pygame.image.load("path.png").convert()
         self._end_surf = pygame.image.load("end.png").convert()
+
     def on_event(self, event):
         if event.type == QUIT:
             self._running = False
@@ -90,12 +92,10 @@ class App:
         self._display_surf.fill((0, 0, 0))
         self.maze.draw(self._display_surf, self._block_surf)
         a_star = Path(self.grid, "Manhattan")
-        path, length = a_star.a_star({'x': 1, 'y': 1}, {'x': 1, 'y': 8})
+        path, length = a_star.a_star({'x': 1, 'y': 1}, {'x': 8, 'y': 7})
         self.maze.draw_path(self._display_surf, self._path_surf, path)
-        self._display_surf.blit(self._image_surf, (path[0]['x']*44, path[0]['y']*44))
-        self._display_surf.blit(self._end_surf, (path[-1]['x']*44, path[-1]['y']*44))
-
-
+        self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, (self.N - path[0]['y']-1)*44))
+        self._display_surf.blit(self._end_surf, (path[-1]['x']*44, (self.N - path[-1]['y']-1)*44))
         pygame.display.flip()
 
     @staticmethod

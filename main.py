@@ -60,16 +60,5 @@ def read_table(path):
 
 if __name__ == "__main__":
     table = read_table('map.txt')
-    print("BFS:")
-    #test_bfs(table)
-    print("DFS:")
-    #test_dfs(table)
-    print("IDS:")
-    #test_ids(table)
-    print("A_STAR:")
-    #test_a_star(table)
-    print("RBFS:")
-    #test_rbfs(table)
-
     theApp = App(table)
     theApp.on_execute()
