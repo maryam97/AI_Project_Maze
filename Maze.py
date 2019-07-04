@@ -147,13 +147,13 @@ class Path:
                 tmp.f = tmp.g + tmp.h
                 next_neighbor = 0
                 for cell in open_list:
-                    if cell.get_xy() == tmp.get_xy() and cell.f < tmp.f:
+                    if cell.get_xy() == tmp.get_xy() and cell.f <= tmp.f:
                         next_neighbor = 1
                         break
                 if next_neighbor:
                     continue
                 for cell in closed_list:
-                    if cell.get_xy() == tmp.get_xy() and cell.f < tmp.f:
+                    if cell.get_xy() == tmp.get_xy() and cell.f <= tmp.f:
                         next_neighbor = 1
                         break
                 if next_neighbor:
@@ -165,7 +165,7 @@ class Path:
             closed_list.append(q)
 
         if dest_cell.parent is None:
-            return [[], -1]
+            return [[], 0, len(closed_list)]
 
         else:
             path = []
@@ -174,7 +174,7 @@ class Path:
                 path.append(r.get_xy())
                 r = r.parent
             path.append(src_cell.get_xy())
-            return [[item for item in reversed(path)], len(path), len(closed_list)]
+            return [[item for item in reversed(path)], len(path), len(closed_list)+len(open_list)]
 
     def rbfs(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
@@ -217,7 +217,7 @@ class Path:
                     return result, best.f
         result_out, bestf = rbfs_recursive(src_cell, inf)
         if result_out is None:
-            return [[], -1]
+            return [[], -1, len(visited)]
         else:
             path = []
             r = result_out

@@ -1,7 +1,9 @@
 from pygame.locals import *
 import pygame
 from Maze import Path
-import time
+from time import time
+from tkinter import messagebox
+
 
 
 class Maze:
@@ -48,6 +50,7 @@ class App:
         self.src = src
         self.dest = dest
         self.h_method = h_method
+        self.done = False
 
     def on_init(self):
         pygame.init()
@@ -70,9 +73,24 @@ class App:
     def on_render(self):
         self._display_surf.fill((0, 0, 0))
         self.maze.draw(self._display_surf, self._block_surf)
-        instance = Path(self.grid, self.h_method,self.search_method)
-        path, length = instance.search(self.src, self.dest)
-        self.maze.draw_path(self._display_surf, self._path_surf, path)
+        instance = Path(self.grid, self.h_method, self.search_method)
+        t0 = time()
+        path, length, expanded_nodes = instance.search(self.src, self.dest)
+        t1 = time()
+        if length > 0:
+            if not self.done:
+                messagebox.showinfo("Found the Destination", "Elapsed Time: " + str(t1 - t0) + '\n' +
+                                    "Path Length: " + str(length) + '\n' +
+                                    "Number of Expanded Nodes: " + str(expanded_nodes))
+                self.done = True
+
+            self.maze.draw_path(self._display_surf, self._path_surf, path)
+        else:
+            if not self.done:
+                messagebox.showinfo("No Path Founded", "Elapsed Time: " + str(t1 - t0) + '\n' +
+                                    "Path Length: " + str(length) + '\n' +
+                                    "Number of Expanded Nodes: " + str(expanded_nodes))
+                self.done = True
         # self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, (self.N - path[0]['y']-1)*44))
         # self._display_surf.blit(self._end_surf, (path[-1]['x']*44, (self.N - path[-1]['y']-1)*44))
         self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, path[0]['y']*44))
