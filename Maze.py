@@ -83,7 +83,7 @@ class Path:
     def ids(self, src, dest):
         par = {}
         vis = []
-        non_block = self.n_y * self.n_x - sum([sum(table[j]) for j in range(self.n_x)])
+        non_block = self.n_y * self.n_x - sum([sum(self.grid[j]) for j in range(self.n_x)])
 
         def ids_recursive(lim):
 
