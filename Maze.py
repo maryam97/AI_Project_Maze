@@ -60,10 +60,12 @@ class Path:
     def dfs(self, src, dest):
         vis = []
         par = {}
+        expand = []
 
         def dfs_recursive(src_):
             src_cell = Cell(src_['x'], src_['y'], self.n_x, self.n_y, self.grid)
             vis.append(src_)
+            expand.append(src_)
             for e in src_cell.neighbors:
                 if e not in vis:
                     par[(e['x'], e['y'])] = (src_cell.x, src_cell.y)
@@ -78,7 +80,7 @@ class Path:
                 path.append({'x': cell[0], 'y': cell[1]})
                 cell = par[cell]
             path.append(src)
-        return [path[::-1], len(path)]
+        return [path[::-1], len(path), len(expand)]
 
     def ids(self, src, dest):
         par = {}
