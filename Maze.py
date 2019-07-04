@@ -80,12 +80,56 @@ class Path:
             path.append(src)
         return [path[::-1], len(path)]
 
-    def ids(self, src, dest, limit):
-        sol_len = 0
-        path, length = self.dfs(src, dest)
-        if len(path) <= limit + 1:
-            sol_len = len(path)
-        return [sol_len, path[::-1], len(path)]
+    def ids(self, src, dest):
+        par = {}
+        vis = []
+        non_block = self.n_y * self.n_x - sum([sum(table[j]) for j in range(self.n_x)])
+
+        def ids_recursive(lim):
+
+            stack = list()
+            stack.append((src, 0))
+            vis.append(src)
+            reach = 0
+            expand = 0
+            while len(stack):
+                node, d = stack.pop()
+                node_cell = Cell(node['x'], node['y'], self.n_x, self.n_y, self.grid)
+                expand += 1
+                if lim > d:
+                    break
+                else:
+                    for e in node_cell.neighbors:
+                        if e not in vis:
+                            par[(e['x'], e['y'])] = (node_cell.x, node_cell.y)
+                            vis.append(e)
+                            stack.append((e, d + 1))
+                        if e == dest:
+                            reach = 1
+                            break
+                        elif len(vis) >= non_block:
+                            reach = -1
+                            break
+
+            return reach, expand
+
+        ex = 0
+        for l in range(inf):
+            par.clear()
+            vis.clear()
+            re, ex = ids_recursive(l)
+            if re == 1 or re == -1:
+                break
+
+        path = []
+        src_tmp = (src['x'], src['y'])
+        cell = (dest['x'], dest['y'])
+        if par[cell]:
+            while cell != src_tmp:
+                path.append({'x': cell[0], 'y': cell[1]})
+                cell = par[cell]
+            path.append(src)
+        return [path[::-1], len(path), ex]
 
     def bfs(self, src, dest):
 
