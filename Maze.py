@@ -225,6 +225,42 @@ class Path:
             path.append(src_cell.get_xy())
             return [[item for item in reversed(path)], len(path), len(closed_list)+len(open_list)]
 
+    def rbsfs(self, src, dest):
+        src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
+        src_cell.g = 0
+        src_cell.h = self.heuristic(src_cell.get_xy(), dest)
+        src_cell.f = src_cell.g + src_cell.h
+        src_cell.parent = src_cell
+        dest_cell = Cell(dest['x'], dest['y'], self.n_x, self.n_y, self.grid)
+        visited = [src]
+        open_list = [src_cell]
+        succ = 0
+        while len(open_list):
+            open_list.sort(key=lambda x:  x.f)
+            if open_list[0].get_xy() == dest_cell.get_xy():
+                succ = 1
+                break
+            visited.append(open_list[0])
+            for item in open_list[0].neighbors:
+                if item not in visited:
+                    tmp = Cell(item['x'], item['y'], self.n_x, self.n_y, self.grid)
+                    tmp.g = open_list[0].g + 1
+                    tmp.h = self.heuristic(tmp.get_xy(), dest_cell.get_xy())
+                    tmp.parent = open_list[0]
+
+        if succ:
+            path = []
+            r = open_list[0]
+            while r.get_xy() != src_cell.get_xy():
+                path.append(r.get_xy())
+                r = r.parent
+            path.append(src_cell.get_xy())
+            return [[item for item in reversed(path)], len(path), len(visited)]
+
+
+
+
+
     def rbfs(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
         src_cell.g = 0
@@ -236,9 +272,8 @@ class Path:
 
         def rbfs_recursive(node, f_in):
             visited.append(node.get_xy())
-            print(node.get_xy())
-            print(self.grid[node.get_xy()['x']][node.get_xy()['y']])
             if node.get_xy() == dest_cell.get_xy():
+                print(1)
                 return node, 0
             neighbor_nodes = []
             for neighbor in node.neighbors:
@@ -246,29 +281,39 @@ class Path:
                     tmp = Cell(neighbor['x'], neighbor['y'], self.n_x, self.n_y, self.grid)
                     neighbor_nodes.append(tmp)
             if len(neighbor_nodes) == 0:
+                print(2)
                 return None, inf
             for i in range(len(neighbor_nodes)):
                 neighbor_nodes[i].g = node.g + 1
                 neighbor_nodes[i].h = self.heuristic(neighbor_nodes[i].get_xy(), dest_cell.get_xy())
                 neighbor_nodes[i].f = max(neighbor_nodes[i].g + neighbor_nodes[i].h, node.f)
+                print(neighbor_nodes[i].get_xy(), neighbor_nodes[i].f)
             while True:
+
                 neighbor_nodes.sort(key=lambda x: x.f)
-                best = neighbor_nodes[0]
-                if best.f > f_in:
-                    return None, best.f
+
+                if neighbor_nodes[0].f > f_in:
+                    print(3)
+                    return None, neighbor_nodes[0].f
                 try:
-                    alt = neighbor_nodes[1]
-                    result, best.f = rbfs_recursive(best, min(f_in, alt.f))
+                    print(neighbor_nodes[0].get_xy(), min(f_in, neighbor_nodes[1].f), 'w/alt')
+                    result, neighbor_nodes[0].f = rbfs_recursive(neighbor_nodes[0], min(f_in, neighbor_nodes[1].f))
+                    print(result, neighbor_nodes[0].f)
 
                 except IndexError:
-                    result, best.f = rbfs_recursive(best, f_in)
+                    print(neighbor_nodes[0].get_xy(), f_in, 'w/o alt')
+                    result, neighbor_nodes[0].f = rbfs_recursive(neighbor_nodes[0], f_in)
+                    print('back to : ', node.get_xy(), result, neighbor_nodes[0].f)
 
                 if result is not None:
-                    best.parent = node
-                    return result, best.f
+                    neighbor_nodes[0].parent = node
+                    print('back to : ', node.get_xy(), result, neighbor_nodes[0].f, 4)
+                    return result, neighbor_nodes[0].f
+        print(src_cell.get_xy(), inf)
         result_out, bestf = rbfs_recursive(src_cell, inf)
+        print(result_out, bestf)
         if result_out is None:
-            return [[], -1, len(visited)]
+            return [[], 0, len(visited)]
         else:
             path = []
             r = result_out

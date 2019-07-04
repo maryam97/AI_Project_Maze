@@ -5,7 +5,6 @@ from time import time
 from tkinter import messagebox
 
 
-
 class Maze:
     def __init__(self, grid):
         self.M = len(grid[0])
@@ -16,22 +15,16 @@ class Maze:
         for i in range(len(self.maze)):
             for j in range(len(self.maze[0])):
                 if self.maze[i][j] == 1:
-                    # display_surf.blit(image_surf, (i * 44, (self.N - j - 1) * 44))
-                    display_surf.blit(image_surf, (i * 44, j * 44))
+                    display_surf.blit(image_surf, (i * 20, j * 20))
 
     def draw_path(self, display_surf, path_surf, path):
         for item in path:
-            display_surf.blit(path_surf, (item['x']*44, item['y']*44))
-            # self._display_surf.blit(self._image_surf, ((path[0]['x']) * 44, path[0]['y'] * 44))
-            # self._display_surf.blit(self._end_surf, (path[-1]['x'] * 44, path[-1]['y'] * 44))
-            # pygame.display.flip()
-            # time.sleep(1)
-            # display_surf.blit(path_surf, (item['x']*44, (self.N - item['y'] - 1)*44))
+            display_surf.blit(path_surf, (item['x']*20, item['y']*20))
 
 
 class App:
-    windowWidth = 1920
-    windowHeight = 1080
+    windowWidth = 600
+    windowHeight = 600
     player = 0
 
     def __init__(self, grid, search_method, src, dest, h_method):
@@ -91,10 +84,9 @@ class App:
                                     "Path Length: " + str(length) + '\n' +
                                     "Number of Expanded Nodes: " + str(expanded_nodes))
                 self.done = True
-        # self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, (self.N - path[0]['y']-1)*44))
-        # self._display_surf.blit(self._end_surf, (path[-1]['x']*44, (self.N - path[-1]['y']-1)*44))
-        self._display_surf.blit(self._image_surf, ((path[0]['x'])*44, path[0]['y']*44))
-        self._display_surf.blit(self._end_surf, (path[-1]['x']*44, path[-1]['y']*44))
+
+        self._display_surf.blit(self._image_surf, ((self.src['x'])*20, self.src['y']*20))
+        self._display_surf.blit(self._end_surf, (self.dest['x']*20, self.dest['y']*20))
 
         pygame.display.flip()
 
