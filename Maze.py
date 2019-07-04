@@ -140,10 +140,13 @@ class Path:
         dist[src['x']][src['y']] = 0
         par = {}
         vis_dest = False
+        expand = 0
+
         while not q.empty():
             if vis_dest:
                 break
             front = q.get()
+            expand += 1
             for neigh in front.neighbors:
                 if dist[neigh['x']][neigh['y']] == inf:
                     dist[neigh['x']][neigh['y']] = dist[front.x][front.y] + 1
@@ -162,7 +165,7 @@ class Path:
                 path.append({'x': cell[0], 'y': cell[1]})
                 cell = par[cell]
             path.append(src)
-        return [path[::-1], len(path)]
+        return [path[::-1], len(path), expand]
 
     def a_star(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
