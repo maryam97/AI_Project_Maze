@@ -187,6 +187,8 @@ class Path:
 
         def rbfs_recursive(node, f_in):
             visited.append(node.get_xy())
+            print(node.get_xy())
+            print(self.grid[node.get_xy()['x']][node.get_xy()['y']])
             if node.get_xy() == dest_cell.get_xy():
                 return node, 0
             neighbor_nodes = []

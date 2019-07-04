@@ -30,8 +30,8 @@ class Maze:
 
 
 class App:
-    windowWidth = 800
-    windowHeight = 600
+    windowWidth = 1920
+    windowHeight = 1080
     player = 0
 
     def __init__(self, grid, search_method, src, dest, h_method):
