@@ -174,7 +174,7 @@ class Path:
                 path.append(r.get_xy())
                 r = r.parent
             path.append(src_cell.get_xy())
-            return [[item for item in reversed(path)], len(path)]
+            return [[item for item in reversed(path)], len(path), len(closed_list)]
 
     def rbfs(self, src, dest):
         src_cell = Cell(src['x'], src['y'], self.n_x, self.n_y, self.grid)
@@ -225,9 +225,9 @@ class Path:
                 path.append(r.get_xy())
                 r = r.parent
             path.append(src_cell.get_xy())
-            return [[item for item in reversed(path)], len(path)]
+            return [[item for item in reversed(path)], len(path), len(visited)]
 
-    def search(self, src, dest, limit= inf):
+    def search(self, src, dest):
         return {'A*': lambda: self.a_star(src, dest),
                 'RBFS': lambda: self.rbfs(src, dest),
                 'BFS': lambda: self.bfs(src, dest),
